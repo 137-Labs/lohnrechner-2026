@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stundenlohn & Reverse Netto Rechner 2026</title>
+<meta name="description" content="Reverse Brutto-Netto Rechner: Stundenlohn, Tagesverdienst, Wochenlohn, Monatslohn, Jahreslohn. Netto-Ziel eingeben, Brutto berechnen.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --ink:#16201c;
+  --paper:#f3efe2;
+  --paper2:#eae4d2;
+  --line:#cdbd93;
+  --gold:#a8772e;
+  --green:#3a6b4f;
+  --red:#9c3b2e;
+  --mono:'IBM Plex Mono',monospace;
+  --display:'Fraunces',serif;
+  --sans:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--sans);
+  min-height:100vh;
+  padding:0 0 70px;
+  background-image:radial-gradient(circle at 20% 0%, #1d2a23 0%, var(--ink) 55%);
+}
+header{
+  border-bottom:1px solid #2a352e;
+  padding:40px 20px 26px;
+  max-width:780px;
+  margin:0 auto;
+}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--gold)}
+h1{
+  font-family:var(--display);
+  font-size:clamp(30px,5.4vw,46px);
+  font-weight:700;
+  line-height:1.06;
+  letter-spacing:-.01em;
+}
+.sub{
+  color:#a7b0a9;
+  font-size:14.5px;
+  margin-top:12px;
+  max-width:56ch;
+  line-height:1.5;
+}
+main{max-width:780px;margin:0 auto;padding:28px 20px}
+.tabs{display:flex;gap:0;border:1px solid #3a463d;border-radius:12px;overflow:hidden;margin-bottom:22px;background:#1c2620}
+.tab{
+  flex:1;padding:15px;text-align:center;cursor:pointer;
+  font-weight:600;font-size:13.5px;background:transparent;color:#8b958e;
+  border:none;transition:.18s;font-family:var(--sans);
+}
+.tab.active{background:var(--gold);color:#1c1304}
+.card{
+  background:var(--paper);color:var(--ink);
+  border-radius:18px;padding:28px;
+  margin-bottom:20px;
+  box-shadow:0 18px 40px -16px rgba(0,0,0,.5);
+}
+label{
+  display:block;font-size:11.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.07em;color:#6b6450;margin-bottom:7px;margin-top:18px;
+}
+label:first-of-type{margin-top:0}
+input[type=number],select{
+  width:100%;padding:14px 15px;font-size:18px;font-family:var(--mono);
+  border:1.5px solid var(--line);border-radius:9px;background:#fffdf7;color:var(--ink);
+}
+input[type=number]:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(168,119,46,.18)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.checks{display:flex;gap:20px;margin-top:18px;flex-wrap:wrap}
+.check{display:flex;align-items:center;gap:7px;font-size:13px;color:#4a4534}
+.check input{width:16px;height:16px;accent-color:var(--gold)}
+button.calc{
+  width:100%;margin-top:24px;padding:17px;
+  background:var(--ink);color:var(--paper);border:none;border-radius:10px;
+  font-size:16px;font-weight:700;cursor:pointer;letter-spacing:.02em;
+  transition:.15s;
+}
+button.calc:hover{background:#22322a}
+button.calc:active{transform:scale(.99)}
+.results{display:none}
+.results.show{display:block}
+
+.heroRow{display:grid;grid-template-columns:1.2fr 1fr;gap:1px;background:var(--line);border-radius:14px;overflow:hidden;margin-top:4px}
+.hero{background:var(--paper2);padding:22px 18px;text-align:center}
+.hero.main{background:var(--gold);color:#1c1304}
+.hero .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;opacity:.75}
+.hero .val{font-family:var(--display);font-size:34px;font-weight:700;margin-top:6px}
+
+.result-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--line);border-radius:12px;overflow:hidden;margin-top:14px;
+}
+.rcell{background:var(--paper2);padding:14px 8px;text-align:center}
+.rcell .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#7a7460;font-weight:700}
+.rcell .val{font-family:var(--mono);font-size:16px;font-weight:700;margin-top:5px;color:var(--ink)}
+
+.breakdown{margin-top:22px;border-top:1px solid var(--line);padding-top:16px}
+.bhead{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#7a7460;font-weight:700;margin-bottom:8px}
+.brow{display:flex;justify-content:space-between;font-size:13.5px;padding:7px 0;font-family:var(--mono);border-bottom:1px dashed #ddd2b3}
+.brow.total{border-top:1.5px solid var(--ink);border-bottom:none;margin-top:6px;padding-top:12px;font-weight:700;font-size:15px}
+.brow .neg{color:var(--red)}
+
+.capnote{font-size:11.5px;color:#8a8366;margin-top:14px;line-height:1.5}
+
+footer.note{
+  max-width:780px;margin:34px auto 0;padding:0 20px;
+  font-size:12px;color:#7c867f;line-height:1.65;
+}
+@media(max-width:520px){.result-grid{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr}.heroRow{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow" id="eyebrowYear">137-labs · Lohnrechner 2026</div>
+  <h1>Stundenlohn & Reverse Netto Rechner</h1>
+  <p class="sub">Gib ein, was du brauchst oder was dir angeboten wird. Stunde, Tag, Woche, Monat, Jahr — Brutto und Netto, alles auf einen Blick.</p>
+</header>
+
+<main>
+  <div class="tabs">
+    <button class="tab active" id="tabForward" onclick="setMode('forward')">Ich kenne meinen Stundenlohn</button>
+    <button class="tab" id="tabReverse" onclick="setMode('reverse')">Ich will ein Netto-Ziel</button>
+  </div>
+
+  <div class="card">
+    <div id="forwardInputs">
+      <label for="hourly">Stundenlohn (Brutto, €)</label>
+      <input type="number" id="hourly" step="0.10" placeholder="z.B. 14.50" inputmode="decimal">
+    </div>
+
+    <div id="reverseInputs" style="display:none">
+      <label for="targetNetto">Gewünschtes Netto pro Monat (€)</label>
+      <input type="number" id="targetNetto" step="10" placeholder="z.B. 1800" inputmode="decimal">
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="hoursWeek">Stunden pro Woche</label>
+        <input type="number" id="hoursWeek" value="40" step="1" inputmode="decimal">
+      </div>
+      <div>
+        <label for="steuerklasse">Steuerklasse</label>
+        <select id="steuerklasse">
+          <option value="1">1 – Ledig</option>
+          <option value="2">2 – Alleinerziehend</option>
+          <option value="3">3 – Verheiratet (Top-Verdiener)</option>
+          <option value="4">4 – Verheiratet (gleich)</option>
+          <option value="5">5 – Verheiratet (Zweitverdiener)</option>
+          <option value="6">6 – Zweitjob</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="zusatz">Zusatzbeitrag Krankenkasse (%)</label>
+        <input type="number" id="zusatz" value="2.5" step="0.1" inputmode="decimal">
+      </div>
+      <div>
+        <label for="tageWoche">Arbeitstage pro Woche</label>
+        <input type="number" id="tageWoche" value="5" step="1" inputmode="decimal">
+      </div>
+    </div>
+
+    <div class="checks">
+      <label class="check"><input type="checkbox" id="childless" checked> Kinderlos / über 23</label>
+      <label class="check"><input type="checkbox" id="kirche"> Kirchensteuer (9%)</label>
+    </div>
+
+    <button class="calc" onclick="calculate()">Berechnen</button>
+  </div>
+
+  <div class="card results" id="resultsCard">
+
+    <div class="heroRow">
+      <div class="hero main">
+        <div class="lbl" id="heroMainLabel">Monatliches Netto</div>
+        <div class="val" id="heroMainValue">–</div>
+      </div>
+      <div class="hero">
+        <div class="lbl">Netto pro Tag</div>
+        <div class="val" id="heroDayValue">–</div>
+      </div>
+    </div>
+
+    <div class="result-grid" id="resultGrid"></div>
+
+    <div class="breakdown">
+      <div class="bhead">Abzüge pro Monat</div>
+      <div id="breakdown"></div>
+    </div>
+
+    <div class="capnote" id="capNote"></div>
+    <div class="capnote">Schätzung, Stand <span id="estYear">2026</span> — bitte vor wichtigen Entscheidungen gegenprüfen.</div>
+  </div>
+</main>
+
+<footer class="note">
+  Schätzung auf Basis der Einkommensteuer-Formel §32a EStG (Stand 2026), Sozialversicherungssätzen 2026 (RV 18,6%, AV 2,6%, KV 14,6% + individueller Zusatzbeitrag, PV 3,6% +0,6% Kinderlosenzuschlag) inkl. Beitragsbemessungsgrenzen und vereinfachter Steuerklassen-Logik. Kein Ersatz für eine offizielle Lohnabrechnung — Freibeträge und Einzelfälle können abweichen. 2026-Werte sind Schätzwerte und sollten vor Vertragsabschluss gegengeprüft werden.
+</footer>
+
+<script>
+let mode = 'forward';
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('eyebrowYear').textContent = `137-labs · Lohnrechner ${TAX_YEAR.jahr}`;
+  document.getElementById('estYear').textContent = TAX_YEAR.jahr;
+});
+function setMode(m){
+  mode = m;
+  document.getElementById('tabForward').classList.toggle('active', m==='forward');
+  document.getElementById('tabReverse').classList.toggle('active', m==='reverse');
+  document.getElementById('forwardInputs').style.display = m==='forward' ? 'block' : 'none';
+  document.getElementById('reverseInputs').style.display = m==='reverse' ? 'block' : 'none';
+  document.getElementById('resultsCard').classList.remove('show');
+}
+
+// ─────────────────────────────────────────────────────────
+// JAHRESKONSTANTEN — Stand 2026. Einzige Stelle, die jedes
+// Jahr (i.d.R. ab 1. Januar) manuell aktualisiert werden muss.
+// Quelle zum Gegenprüfen: bundesfinanzministerium.de / §32a EStG
+// ─────────────────────────────────────────────────────────
+const TAX_YEAR = {
+  jahr: 2026,
+  grundfreibetrag: 12348,
+  zone2_ende: 17799,
+  zone3_ende: 69878,
+  zone4_ende: 277825,
+  zone2_a: 914.51, zone2_b: 1400,
+  zone3_a: 173.10, zone3_b: 2397, zone3_c: 1034.87,
+  zone4_satz: 0.42, zone4_abzug: 11135.63,
+  zone5_satz: 0.45, zone5_abzug: 19470.38,
+  soliFreigrenze: 20350,
+  capRvAv: 101400,
+  capKvPv: 69750,
+  werbungskosten: 1230,
+  sonderausgaben: 36,
+  entlastungAlleinerziehend: 4260
+};
+
+function einkommensteuer(zvE){
+  const t = TAX_YEAR;
+  zvE = Math.floor(zvE);
+  if(zvE <= t.grundfreibetrag) return 0;
+  if(zvE <= t.zone2_ende){
+    const y = (zvE - t.grundfreibetrag)/10000;
+    return (t.zone2_a*y + t.zone2_b) * y;
+  }
+  if(zvE <= t.zone3_ende){
+    const z = (zvE - t.zone2_ende)/10000;
+    return (t.zone3_a*z + t.zone3_b) * z + t.zone3_c;
+  }
+  if(zvE <= t.zone4_ende){
+    return t.zone4_satz*zvE - t.zone4_abzug;
+  }
+  return t.zone5_satz*zvE - t.zone5_abzug;
+}
+
+const CAP_RV_AV = TAX_YEAR.capRvAv;
+const CAP_KV_PV = TAX_YEAR.capKvPv;
+
+function socialInsurance(bruttoYear, childless, zusatzPct){
+  const bRVAV = Math.min(bruttoYear, CAP_RV_AV);
+  const bKVPV = Math.min(bruttoYear, CAP_KV_PV);
+
+  const rv = bRVAV * 0.093;
+  const av = bRVAV * 0.013;
+  const kvBase = 0.073 + (zusatzPct/100)/2;
+  const kv = bKVPV * kvBase;
+  let pvRate = 0.018;
+  if(childless) pvRate += 0.006;
+  const pv = bKVPV * pvRate;
+
+  return {rv, av, kv, pv, total: rv+av+kv+pv, capped: bruttoYear > CAP_KV_PV};
+}
+
+function lohnsteuer(zvE, klasse){
+  switch(String(klasse)){
+    case '2': return einkommensteuer(Math.max(0, zvE - TAX_YEAR.entlastungAlleinerziehend));
+    case '3': return 2 * einkommensteuer(Math.max(0, zvE/2));
+    case '5':
+    case '6': return einkommensteuer(zvE + TAX_YEAR.grundfreibetrag);
+    default: return einkommensteuer(zvE);
+  }
+}
+
+function soli(steuer){
+  if(steuer <= TAX_YEAR.soliFreigrenze) return 0;
+  return Math.min(steuer*0.055, (steuer-TAX_YEAR.soliFreigrenze)*0.119);
+}
+
+function nettoFromBrutto(bruttoYear, klasse, childless, kirche, zusatzPct){
+  const si = socialInsurance(bruttoYear, childless, zusatzPct);
+  const zvE = Math.max(0, bruttoYear - TAX_YEAR.werbungskosten - TAX_YEAR.sonderausgaben - si.total);
+  const est = lohnsteuer(zvE, klasse);
+  const soliTax = soli(est);
+  const kircheTax = kirche ? est * 0.09 : 0;
+  const totalTax = est + soliTax + kircheTax;
+  const netto = bruttoYear - si.total - totalTax;
+  return {netto, si, est, soliTax, kircheTax, totalTax};
+}
+
+function bruttoFromTargetNetto(targetNettoYear, klasse, childless, kirche, zusatzPct){
+  let lo = targetNettoYear, hi = targetNettoYear * 3.0;
+  for(let i=0;i<60;i++){
+    const mid = (lo+hi)/2;
+    const r = nettoFromBrutto(mid, klasse, childless, kirche, zusatzPct);
+    if(r.netto < targetNettoYear) lo = mid; else hi = mid;
+  }
+  return (lo+hi)/2;
+}
+
+function fmt(n){
+  return n.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+}
+
+function calculate(){
+  const klasse = document.getElementById('steuerklasse').value;
+  const childless = document.getElementById('childless').checked;
+  const kirche = document.getElementById('kirche').checked;
+  const zusatzPct = parseFloat(document.getElementById('zusatz').value) || 2.5;
+  const hoursWeek = parseFloat(document.getElementById('hoursWeek').value) || 40;
+  const tageWoche = parseFloat(document.getElementById('tageWoche').value) || 5;
+  const hoursYear = hoursWeek * 52;
+
+  let bruttoYear, result;
+
+  if(mode === 'forward'){
+    const hourly = parseFloat(document.getElementById('hourly').value);
+    if(!hourly || hourly <= 0){ alert('Bitte Stundenlohn eingeben.'); return; }
+    bruttoYear = hourly * hoursYear;
+    result = nettoFromBrutto(bruttoYear, klasse, childless, kirche, zusatzPct);
+  } else {
+    const targetNettoMonth = parseFloat(document.getElementById('targetNetto').value);
+    if(!targetNettoMonth || targetNettoMonth <= 0){ alert('Bitte Netto-Ziel eingeben.'); return; }
+    const targetNettoYear = targetNettoMonth * 12;
+    bruttoYear = bruttoFromTargetNetto(targetNettoYear, klasse, childless, kirche, zusatzPct);
+    result = nettoFromBrutto(bruttoYear, klasse, childless, kirche, zusatzPct);
+  }
+
+  const bruttoHour = bruttoYear / hoursYear;
+  const nettoHour = result.netto / hoursYear;
+  const bruttoMonth = bruttoYear / 12;
+  const nettoMonth = result.netto / 12;
+  const bruttoWeek = bruttoYear / 52;
+  const nettoWeek = result.netto / 52;
+  const hoursDay = hoursWeek / tageWoche;
+  const bruttoDay = bruttoHour * hoursDay;
+  const nettoDay = nettoHour * hoursDay;
+
+  document.getElementById('heroMainLabel').textContent = mode === 'forward' ? 'Monatliches Netto' : 'Benötigter Stundenlohn (Brutto)';
+  document.getElementById('heroMainValue').textContent = mode === 'forward' ? fmt(nettoMonth) : fmt(bruttoHour);
+  document.getElementById('heroDayValue').textContent = fmt(nettoDay);
+
+  const grid = document.getElementById('resultGrid');
+  grid.innerHTML = `
+    <div class="rcell"><div class="lbl">Stunde</div><div class="val">${fmt(nettoHour)}</div></div>
+    <div class="rcell"><div class="lbl">Woche</div><div class="val">${fmt(nettoWeek)}</div></div>
+    <div class="rcell"><div class="lbl">Monat</div><div class="val">${fmt(nettoMonth)}</div></div>
+    <div class="rcell"><div class="lbl">Jahr</div><div class="val">${fmt(result.netto)}</div></div>
+  `;
+
+  document.getElementById('breakdown').innerHTML = `
+    <div class="brow"><span>Brutto (Tag / Monat / Jahr)</span><span>${fmt(bruttoDay)} / ${fmt(bruttoMonth)} / ${fmt(bruttoYear)}</span></div>
+    <div class="brow"><span>Rentenversicherung</span><span class="neg">– ${fmt(result.si.rv/12)}</span></div>
+    <div class="brow"><span>Arbeitslosenversicherung</span><span class="neg">– ${fmt(result.si.av/12)}</span></div>
+    <div class="brow"><span>Krankenversicherung (inkl. Zusatzbeitrag)</span><span class="neg">– ${fmt(result.si.kv/12)}</span></div>
+    <div class="brow"><span>Pflegeversicherung</span><span class="neg">– ${fmt(result.si.pv/12)}</span></div>
+    <div class="brow"><span>Lohnsteuer</span><span class="neg">– ${fmt(result.est/12)}</span></div>
+    ${result.soliTax>0?`<div class="brow"><span>Solidaritätszuschlag</span><span class="neg">– ${fmt(result.soliTax/12)}</span></div>`:''}
+    ${kirche?`<div class="brow"><span>Kirchensteuer</span><span class="neg">– ${fmt(result.kircheTax/12)}</span></div>`:''}
+    <div class="brow total"><span>Netto pro Monat</span><span>${fmt(nettoMonth)}</span></div>
+  `;
+
+  document.getElementById('capNote').textContent = result.si.capped
+    ? 'Hinweis: Brutto liegt über der Beitragsbemessungsgrenze (KV/PV: 69.750 € / Jahr) — Sozialabgaben sind gedeckelt.'
+    : '';
+
+  document.getElementById('resultsCard').classList.add('show');
+}
+</script>
+</body>
+</html>
