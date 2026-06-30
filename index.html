@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stundenlohn & Reverse Netto Rechner 2026</title>
 <meta name="description" content="Reverse Brutto-Netto Rechner: Stundenlohn, Tagesverdienst, Wochenlohn, Monatslohn, Jahreslohn. Netto-Ziel eingeben, Brutto berechnen.">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16201c">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap');
 :root{
@@ -132,6 +136,7 @@ footer.note{
   <div class="eyebrow" id="eyebrowYear">137-labs · Lohnrechner 2026</div>
   <h1>Stundenlohn & Reverse Netto Rechner</h1>
   <p class="sub">Gib ein, was du brauchst oder was dir angeboten wird. Stunde, Tag, Woche, Monat, Jahr — Brutto und Netto, alles auf einen Blick.</p>
+  <button id="installBtn" style="display:none;margin-top:16px;padding:10px 18px;background:var(--gold);color:#1c1304;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">📲 App installieren</button>
 </header>
 
 <main>
@@ -222,6 +227,27 @@ let mode = 'forward';
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('eyebrowYear').textContent = `137-labs · Lohnrechner ${TAX_YEAR.jahr}`;
   document.getElementById('estYear').textContent = TAX_YEAR.jahr;
+});
+
+// PWA: service worker + install prompt
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+let deferredInstall = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstall = e;
+  document.getElementById('installBtn').style.display = 'inline-block';
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if(!deferredInstall) return;
+  deferredInstall.prompt();
+  await deferredInstall.userChoice;
+  deferredInstall = null;
+  document.getElementById('installBtn').style.display = 'none';
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBtn').style.display = 'none';
 });
 function setMode(m){
   mode = m;
