@@ -1,5 +1,7 @@
 # Stundenlohn & Reverse Netto Rechner
 
+🔗 **[Live App öffnen](https://137-labs.github.io/lohnrechner-2026/)**
+
 Single-file web tool for German hourly wages and net pay.
 
 ## What it does
