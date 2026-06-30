@@ -128,6 +128,27 @@ footer.note{
   font-size:12px;color:#7c867f;line-height:1.65;
 }
 @media(max-width:520px){.result-grid{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr}.heroRow{grid-template-columns:1fr}}
+
+/* Ad placeholders — reserved space, zero layout shift */
+.ad-slot{
+  background:#1c2620;
+  border:1px dashed #3a463d;
+  border-radius:12px;
+  margin:0 auto 20px;
+  max-width:780px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:#7c867f;overflow:hidden;
+}
+.ad-top-banner{width:100%;min-height:50px;margin:18px auto 4px}
+.ad-mid-banner{width:100%;min-height:100px}
+body{padding-bottom:70px}
+.ad-sticky-bottom{
+  position:fixed;bottom:0;left:0;right:0;height:50px;
+  background:var(--ink);border-top:1px solid #3a463d;
+  border-radius:0;margin:0;z-index:1000;
+}
+@media(min-width:760px){.ad-mid-banner{min-height:130px}}
 </style>
 </head>
 <body>
@@ -136,14 +157,17 @@ footer.note{
   <div class="eyebrow" id="eyebrowYear">137-labs · Lohnrechner 2026</div>
   <h1>Stundenlohn & Reverse Netto Rechner</h1>
   <p class="sub">Gib ein, was du brauchst oder was dir angeboten wird. Stunde, Tag, Woche, Monat, Jahr — Brutto und Netto, alles auf einen Blick.</p>
-  <button id="installBtn" style="display:none;margin-top:16px;padding:10px 18px;background:var(--gold);color:#1c1304;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">📲 App installieren</button>
 </header>
 
 <main>
+  <div class="ad-slot ad-top-banner" id="ad-top">Anzeige / Advertisement</div>
+
   <div class="tabs">
     <button class="tab active" id="tabForward" onclick="setMode('forward')">Ich kenne meinen Stundenlohn</button>
     <button class="tab" id="tabReverse" onclick="setMode('reverse')">Ich will ein Netto-Ziel</button>
   </div>
+
+  <button id="installBtn" style="display:none;width:100%;margin:0 0 20px;padding:11px;background:transparent;color:var(--gold);border:1.5px solid var(--gold);border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;">📲 Als App installieren</button>
 
   <div class="card">
     <div id="forwardInputs">
@@ -192,6 +216,8 @@ footer.note{
 
     <button class="calc" onclick="calculate()">Berechnen</button>
   </div>
+
+  <div class="ad-slot ad-mid-banner" id="ad-mid">Anzeige / Advertisement</div>
 
   <div class="card results" id="resultsCard">
 
@@ -422,5 +448,7 @@ function calculate(){
   document.getElementById('resultsCard').classList.add('show');
 }
 </script>
+<div class="ad-slot ad-sticky-bottom" id="ad-sticky-footer">Anzeige / Advertisement</div>
+
 </body>
 </html>
